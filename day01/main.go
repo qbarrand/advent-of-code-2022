@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"errors"
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -32,19 +31,20 @@ func (l *list) addElement(val int) {
 
 	for i := 0; i < l.size; i++ {
 		if curr == nil || val > curr.val {
-			log.Printf("Adding %d at index %d", val, i)
-
 			l.count++
 			l.sum += val
 
 			newElem := &listItem{
 				val:  val,
 				prev: prev,
+				next: curr,
 			}
 
 			if i == 0 {
 				l.top = newElem
-			} else {
+			}
+
+			if prev != nil {
 				prev.next = newElem
 			}
 
@@ -52,7 +52,7 @@ func (l *list) addElement(val int) {
 				// we are placing this node at the end of the list
 				l.bottom = newElem
 			} else {
-				newElem.next = curr
+				curr.prev = newElem
 			}
 
 			break
@@ -62,32 +62,12 @@ func (l *list) addElement(val int) {
 		curr = curr.next
 	}
 
-	log.Printf("Before removal")
-	printList(l)
-
 	if l.count > l.size {
-		log.Printf("%v", l.bottom)
 		l.count--
 		l.sum -= l.bottom.val
 		l.bottom = l.bottom.prev
 		l.bottom.next = nil
 	}
-
-	log.Printf("After removal")
-	printList(l)
-}
-
-func printList(l *list) {
-	curr := l.top
-
-	fmt.Printf("top --> ")
-
-	for curr != nil {
-		fmt.Printf(" %d --> ", curr.val)
-		curr = curr.next
-	}
-
-	fmt.Printf(" end\n")
 }
 
 func main() {
@@ -100,7 +80,6 @@ func main() {
 		line := s.Text()
 
 		if line == "" {
-			log.Printf("Adding %d", curr)
 			list.addElement(curr)
 			curr = 0
 
