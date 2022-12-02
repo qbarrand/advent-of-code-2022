@@ -52,7 +52,19 @@ func charToHand(c uint8) *hand {
 	return nil
 }
 
-func part1Score(theirHand *hand, outcome outcome) int {
+func part1Score(theirs, ours *hand) int {
+	if theirs == ours {
+		return 3
+	}
+
+	if ours.winsAgainst == theirs {
+		return 6
+	}
+
+	return 0
+}
+
+func part2Score(theirHand *hand, outcome outcome) int {
 	switch outcome {
 	case ShouldLose:
 		return 0 + theirHand.winsAgainst.score
@@ -60,18 +72,6 @@ func part1Score(theirHand *hand, outcome outcome) int {
 		return 3 + theirHand.score
 	case ShouldWin:
 		return 6 + theirHand.losesAgainst.score
-	}
-
-	return 0
-}
-
-func part2Score(theirs, ours *hand) int {
-	if theirs == ours {
-		return 3
-	}
-
-	if ours.winsAgainst == theirs {
-		return 6
 	}
 
 	return 0
@@ -86,16 +86,15 @@ func main() {
 	for s.Scan() {
 		line := s.Text()
 
-		col0 := line[0]
-		col1 := line[2]
+		ourChar := line[2]
 
-		theirHand := charToHand(col0)
-		ourHandPart1 := charToHand(col1)
+		theirHand := charToHand(line[0])
+		ourHandPart1 := charToHand(ourChar)
 
 		scorePart1 += ourHandPart1.score
-		scorePart1 += part2Score(theirHand, ourHandPart1)
+		scorePart1 += part1Score(theirHand, ourHandPart1)
 
-		scorePart2 += part1Score(charToHand(col0), outcome(col1))
+		scorePart2 += part2Score(theirHand, outcome(ourChar))
 	}
 
 	if err := s.Err(); err != nil && !errors.Is(err, io.EOF) {
