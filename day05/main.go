@@ -67,6 +67,12 @@ func (s *stack) push(r rune) {
 	}
 }
 
+func (s *stack) pushInOrder(names []rune) {
+	for i := len(names) - 1; i >= 0; i-- {
+		s.push(names[i])
+	}
+}
+
 type crate struct {
 	name rune
 	next *crate
@@ -89,14 +95,16 @@ func main() {
 				readHeader = true
 
 				// Setup stacks
-				for i, rs := range reverseStacks {
-					stacksPart1 = append(stacksPart1, &stack{})
-					stacksPart2 = append(stacksPart2, &stack{})
+				for _, rs := range reverseStacks {
+					s1 := &stack{}
+					s1.pushInOrder(rs)
 
-					for j := len(rs) - 1; j >= 0; j-- {
-						stacksPart1[i].push(rs[j])
-						stacksPart2[i].push(rs[j])
-					}
+					stacksPart1 = append(stacksPart1, s1)
+
+					s2 := &stack{}
+					s2.pushInOrder(rs)
+
+					stacksPart2 = append(stacksPart2, s2)
 				}
 
 				continue
@@ -147,9 +155,7 @@ func main() {
 			log.Fatalf("could not pop %d items in order: %v", n, err)
 		}
 
-		for i := len(names) - 1; i >= 0; i-- {
-			stacksPart2[to-1].push(names[i])
-		}
+		stacksPart2[to-1].pushInOrder(names)
 	}
 
 	if err := s.Err(); err != nil && !errors.Is(err, io.EOF) {
