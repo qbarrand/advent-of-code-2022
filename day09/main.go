@@ -22,15 +22,17 @@ func abs(i int) int {
 	return i
 }
 
-func touches(a, b coord) bool {
+func dist(a, b coord) (int, int, int) {
 	distX := abs(a.x - b.x)
 	distY := abs(a.y - b.y)
 
-	return distX+distY <= 1 || (distX == 1 && distY == 1)
+	return distX, distY, distX + distY
 }
 
-func dist(a, b coord) int {
-	return abs(a.x-b.x) + abs(a.y-b.y)
+func touches(a, b coord) bool {
+	distX, distY, sum := dist(a, b)
+
+	return sum <= 1 || (distX == 1 && distY == 1)
 }
 
 func getClosest(head, tail coord) coord {
@@ -51,7 +53,7 @@ func getClosest(head, tail coord) coord {
 	)
 
 	for _, c := range coords {
-		if d := dist(c, head); d < minDist {
+		if _, _, d := dist(c, head); d < minDist {
 			minDist = d
 			closest = c
 		}
