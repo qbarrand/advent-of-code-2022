@@ -10,15 +10,6 @@ import (
 	"strings"
 )
 
-var targetCycles = map[int]struct{}{
-	20:  {},
-	60:  {},
-	100: {},
-	140: {},
-	180: {},
-	220: {},
-}
-
 func main() {
 	const crtWidth = 40
 
@@ -49,7 +40,7 @@ func main() {
 		}
 
 		for j := i; j <= endTime; j++ {
-			if _, ok := targetCycles[j]; ok {
+			if (j-20)%40 == 0 {
 				part1 += j * X
 			}
 
