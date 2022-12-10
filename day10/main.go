@@ -61,7 +61,7 @@ func main() {
 				sb.WriteRune('.')
 			}
 
-			if sb.Len() == 40 {
+			if sb.Len() == crtWidth {
 				part2Lines = append(part2Lines, sb.String())
 				sb.Reset()
 			}
